@@ -1,6 +1,6 @@
 # Packman
 
-[[Powered by ReactJs]](https://reactjs.org/)
+Powered by [[ ReactJs]](https://reactjs.org/) and [[ NodeJs]](https://nodejs.org/en/)
 
 Packman is a service to measure and compare the unzipped and minified size of different versions of npm packages
 
