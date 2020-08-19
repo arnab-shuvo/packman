@@ -44,6 +44,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 };
 var InstallerUtils = require('../../utils/packageInstallerUtility');
 var versionFinderUtility = require('../../utils/versionFinderUtility');
+//Get major version list and downloa the package
 function getSize(req, res) {
     var e_1, _a;
     return __awaiter(this, void 0, void 0, function () {
@@ -55,25 +56,30 @@ function getSize(req, res) {
                     majorVersions = [];
                     return [4 /*yield*/, versionFinderUtility.searchValidPackage(packageName).then(function (response) {
                             if (response.status === 200) {
-                                var regex_1 = /(\d+\.)+[0-9]$/g;
                                 var versions = [];
-                                var versionList = Object.keys(response.data).filter(function (data, index) {
-                                    if (regex_1.test(data)) {
-                                        return data;
-                                    }
-                                });
-                                console.log(Object.keys(response.data), versionList, 'versionList');
+                                var versionList = Object.keys(response.data).filter(function (data) { return /(\d+\.)+\d+$/g.test(data); });
                                 var looper = versionList.length > 3 ? 3 : versions.length;
-                                for (var i = versionList.length; i > 0; i--) {
-                                    if (majorVersions.length !== looper) {
-                                        var versionData = {
-                                            name: versionList[i - 1],
-                                            link: response.data[versionList[i - 1]].dist.tarball,
-                                            unpackedSize: response.data[versionList[i - 1]].dist.unpackedSize
-                                                ? (response.data[versionList[i - 1]].dist.unpackedSize / 1024).toFixed(2)
-                                                : 0,
-                                        };
-                                        majorVersions.push(versionData);
+                                if (versionList.length == 0) {
+                                    var version = Object.keys(response.data);
+                                    var versionData = {
+                                        name: version,
+                                        link: response.data[version[0]].dist.tarball,
+                                        unpackedSize: response.data[version[0]].dist.unpackedSize ? (response.data[version[0]].dist.unpackedSize / 1024).toFixed(2) : 0,
+                                    };
+                                    majorVersions.push(versionData);
+                                }
+                                else {
+                                    for (var i = versionList.length; i > 0; i--) {
+                                        if (majorVersions.length !== looper) {
+                                            var versionData = {
+                                                name: versionList[i - 1],
+                                                link: response.data[versionList[i - 1]].dist.tarball,
+                                                unpackedSize: response.data[versionList[i - 1]].dist.unpackedSize
+                                                    ? (response.data[versionList[i - 1]].dist.unpackedSize / 1024).toFixed(2)
+                                                    : 0,
+                                            };
+                                            majorVersions.push(versionData);
+                                        }
                                     }
                                 }
                             }
@@ -131,10 +137,12 @@ function getSize(req, res) {
         });
     });
 }
+//Get Version's size info
 function getVersion(req, res) {
-    var e_2, _a;
-    return __awaiter(this, void 0, void 0, function () {
-        var version, singleVersion, version_1, version_1_1, _b, _c, e_2_1;
+    var _this = this;
+    setTimeout(function () { return __awaiter(_this, void 0, void 0, function () {
+        var version, singleVersion, version_1, version_1_1, _a, _b, e_2_1;
+        var e_2, _c;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
@@ -149,15 +157,15 @@ function getVersion(req, res) {
                 case 3:
                     if (!(version_1_1 = _d.sent(), !version_1_1.done)) return [3 /*break*/, 7];
                     singleVersion = version_1_1.value;
-                    _b = singleVersion;
+                    _a = singleVersion;
                     return [4 /*yield*/, InstallerUtils.sizeCalculator(singleVersion.path, 'zipped')];
                 case 4:
-                    _b.packedSize = _d.sent();
+                    _a.packedSize = _d.sent();
                     if (!(singleVersion.unpackedSize === 0)) return [3 /*break*/, 6];
-                    _c = singleVersion;
+                    _b = singleVersion;
                     return [4 /*yield*/, InstallerUtils.sizeCalculator(singleVersion.path, 'unzipped')];
                 case 5:
-                    _c.unpackedSize = _d.sent();
+                    _b.unpackedSize = _d.sent();
                     _d.label = 6;
                 case 6: return [3 /*break*/, 2];
                 case 7: return [3 /*break*/, 14];
@@ -167,8 +175,8 @@ function getVersion(req, res) {
                     return [3 /*break*/, 14];
                 case 9:
                     _d.trys.push([9, , 12, 13]);
-                    if (!(version_1_1 && !version_1_1.done && (_a = version_1.return))) return [3 /*break*/, 11];
-                    return [4 /*yield*/, _a.call(version_1)];
+                    if (!(version_1_1 && !version_1_1.done && (_c = version_1.return))) return [3 /*break*/, 11];
+                    return [4 /*yield*/, _c.call(version_1)];
                 case 10:
                     _d.sent();
                     _d.label = 11;
@@ -186,7 +194,7 @@ function getVersion(req, res) {
                     return [2 /*return*/];
             }
         });
-    });
+    }); }, 1000);
 }
 module.exports = {
     getSize: getSize,

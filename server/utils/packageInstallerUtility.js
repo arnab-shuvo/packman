@@ -45,7 +45,6 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var path = require("path");
 var fs = require('fs');
-var download = require('download-to-file');
 var childProcess = require('child_process');
 var fsUtils = require('nodejs-fs-utils');
 var axios = require('axios');
@@ -107,6 +106,7 @@ var InstallerUtils = {
             });
         });
     },
+    //download the tar file and if unpacked size is not available, extract the file
     installPackage: function (singleVersion, packageName) {
         return __awaiter(this, void 0, void 0, function () {
             var installPath, path, writer, res;
@@ -121,18 +121,26 @@ var InstallerUtils = {
                         return [4 /*yield*/, axios.get(singleVersion.link, { responseType: 'stream' }).then(function (res) {
                                 res.data.pipe(writer);
                                 writer.on('finish', function () { return __awaiter(_this, void 0, void 0, function () {
+                                    var error_1;
                                     return __generator(this, function (_a) {
                                         switch (_a.label) {
                                             case 0:
-                                                if (!(singleVersion.unpackedSize === 0)) return [3 /*break*/, 2];
+                                                if (!(singleVersion.unpackedSize === 0)) return [3 /*break*/, 4];
+                                                _a.label = 1;
+                                            case 1:
+                                                _a.trys.push([1, 3, , 4]);
                                                 return [4 /*yield*/, tarball.extractTarball(path, installPath + "/" + singleVersion.name, function (err) {
                                                         if (err)
                                                             console.log(err);
                                                     })];
-                                            case 1:
+                                            case 2:
                                                 _a.sent();
-                                                _a.label = 2;
-                                            case 2: return [2 /*return*/];
+                                                return [3 /*break*/, 4];
+                                            case 3:
+                                                error_1 = _a.sent();
+                                                console.log(error_1, 'error');
+                                                return [2 /*return*/, singleVersion];
+                                            case 4: return [2 /*return*/];
                                         }
                                     });
                                 }); });
@@ -147,14 +155,21 @@ var InstallerUtils = {
             });
         });
     },
+    //Calculate size of tar and unpacked file
     sizeCalculator: function (path, type) {
         return __awaiter(this, void 0, void 0, function () {
             var size, pathToFolder, newPath, unPackedSize, finalSize;
             return __generator(this, function (_a) {
                 if (type === 'zipped') {
-                    if (fs.existsSync(path)) {
-                        size = fs.statSync(path).size;
-                        return [2 /*return*/, (size / 1024).toFixed(2)];
+                    try {
+                        if (fs.existsSync(path)) {
+                            size = fs.statSync(path).size;
+                            return [2 /*return*/, (size / 1024).toFixed(2)];
+                        }
+                    }
+                    catch (error) {
+                        console.log(error, 'error got');
+                        return [2 /*return*/, 0];
                     }
                     return [2 /*return*/, 0];
                 }
@@ -162,9 +177,11 @@ var InstallerUtils = {
                     try {
                         pathToFolder = path.split('.tgz')[0];
                         newPath = pathToFolder + "/package";
-                        unPackedSize = fsUtils.fsizeSync(newPath, {
-                            symbolicLinks: false,
-                        });
+                        if (fs.existsSync(newPath)) {
+                            unPackedSize = fsUtils.fsizeSync(newPath, {
+                                symbolicLinks: false,
+                            });
+                        }
                         finalSize = (unPackedSize / 1024).toFixed(2);
                         return [2 /*return*/, finalSize];
                     }
@@ -177,18 +194,18 @@ var InstallerUtils = {
             });
         });
     },
+    //Remove Tmp Directory after operation
     clearPath: function (dir) {
         return __awaiter(this, void 0, void 0, function () {
             var command;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        command = "sudo rm -rf " + dir;
-                        return [4 /*yield*/, childProcess.exec(command, function (error, stdout, stderr) { })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
+                command = "sudo rm -rf " + dir;
+                childProcess.exec(command, function (error, stdout, stderr) {
+                    if (error) {
+                        console.log(error, 'error');
+                    }
+                });
+                return [2 /*return*/];
             });
         });
     },

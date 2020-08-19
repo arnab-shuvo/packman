@@ -1,6 +1,5 @@
 import path = require('path');
 const fs = require('fs');
-var download = require('download-to-file');
 const childProcess = require('child_process');
 var fsUtils = require('nodejs-fs-utils');
 const axios = require('axios');
@@ -29,6 +28,8 @@ const InstallerUtils = {
 		}
 	},
 
+	//download the tar file and if unpacked size is not available, extract the file
+
 	async installPackage(singleVersion: any, packageName: string) {
 		const installPath = this.getInstallPath(packageName, singleVersion.name);
 		const path = `${installPath}/${singleVersion.name}.tgz`;
@@ -40,9 +41,15 @@ const InstallerUtils = {
 
 			writer.on('finish', async () => {
 				if (singleVersion.unpackedSize === 0) {
-					await tarball.extractTarball(path, `${installPath}/${singleVersion.name}`, function (err: any) {
-						if (err) console.log(err);
-					});
+					try {
+						await tarball.extractTarball(path, `${installPath}/${singleVersion.name}`, function (err: any) {
+							if (err) console.log(err);
+						});
+					} catch (error) {
+						console.log(error, 'error');
+
+						return singleVersion;
+					}
 				}
 			});
 			writer.on('error', () => {
@@ -53,20 +60,29 @@ const InstallerUtils = {
 		return singleVersion;
 	},
 
+	//Calculate size of tar and unpacked file
+
 	async sizeCalculator(path: string, type: string) {
 		if (type === 'zipped') {
-			if (fs.existsSync(path)) {
-				var { size } = fs.statSync(path);
-				return (size / 1024).toFixed(2);
+			try {
+				if (fs.existsSync(path)) {
+					var { size } = fs.statSync(path);
+					return (size / 1024).toFixed(2);
+				}
+			} catch (error) {
+				console.log(error, 'error got');
+				return 0;
 			}
 			return 0;
 		} else {
 			try {
 				const pathToFolder = path.split('.tgz')[0];
 				const newPath = `${pathToFolder}/package`;
-				var unPackedSize = fsUtils.fsizeSync(newPath, {
-					symbolicLinks: false,
-				});
+				if (fs.existsSync(newPath)) {
+					var unPackedSize = fsUtils.fsizeSync(newPath, {
+						symbolicLinks: false,
+					});
+				}
 				const finalSize = (unPackedSize / 1024).toFixed(2);
 
 				return finalSize;
@@ -77,9 +93,15 @@ const InstallerUtils = {
 		}
 	},
 
+	//Remove Tmp Directory after operation
+
 	async clearPath(dir: any) {
 		const command = `sudo rm -rf ${dir}`;
-		await childProcess.exec(command, function (error: any, stdout: any, stderr: any) {});
+		childProcess.exec(command, function (error: any, stdout: any, stderr: any) {
+			if (error) {
+				console.log(error, 'error');
+			}
+		});
 	},
 };
 
