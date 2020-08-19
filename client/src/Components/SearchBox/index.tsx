@@ -5,8 +5,10 @@ import { fetchSuggestion } from '../../Store/Actions/SuggestionActions';
 import Loader from '../Loader';
 import Item from './Item/item';
 import { ItemWrapper } from './Item/styled';
+import { useParams } from 'react-router-dom';
 
 const SearchBox: React.FC = () => {
+	const params: Params = useParams();
 	const [search, setSearch] = useState<string>('');
 	const { suggestions } = useSelector((state: RootReducer) => state.suggestionStore);
 	const [showSuggestion, setShowSuggestion] = useState<boolean>(false);
@@ -16,6 +18,11 @@ const SearchBox: React.FC = () => {
 			dispatch(fetchSuggestion(search));
 		}
 	}, [search, dispatch]);
+	useEffect(() => {
+		if (params.package_name) {
+			setSearch(params.package_name);
+		}
+	}, [params.package_name]);
 	return (
 		<SearchBoxWrapper>
 			<input

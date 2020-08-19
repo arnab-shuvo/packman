@@ -16,7 +16,7 @@ export const resetAll = () => ({
 
 export const fetchPackage = (packageName: string) => async (dispatch: any) => {
 	dispatch(resetAll());
-	dispatch(fetchVersion(packageName));
+
 	axios
 		.get(`${INFO_URL}${packageName}`)
 		.then((res: any) => {
@@ -27,6 +27,7 @@ export const fetchPackage = (packageName: string) => async (dispatch: any) => {
 				},
 			};
 			dispatch(storePackage(response));
+			dispatch(fetchVersion(packageName));
 		})
 		.catch((err: any) => {
 			const error = {

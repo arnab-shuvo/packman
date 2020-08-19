@@ -12,7 +12,7 @@ import Loader from '../../../Components/Loader';
 const PackageContainer: React.FC = () => {
 	const packageInfo = useSelector((state: RootReducer) => state.packageStore.package);
 
-	const params: any = useParams();
+	const params: Params = useParams();
 	const dispatch = useDispatch();
 	useEffect(() => {
 		dispatch(fetchPackage(params.package_name));
@@ -25,7 +25,7 @@ const PackageContainer: React.FC = () => {
 						{packageInfo?.status !== 200 && (
 							<div className='text-center w-100'>
 								<img src={nopackage} alt={'no-package'} />
-								<p>No Package Fund</p>
+								<p>No Package Found</p>
 							</div>
 						)}
 						{packageInfo?.status === 200 && (
