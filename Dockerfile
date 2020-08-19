@@ -10,7 +10,7 @@ COPY package*.json ./
 
 RUN yarn
 
-COPY ./client/package*.json ./client
+COPY ./client/package.json ./client/package.json
 
 RUN yarn
 
