@@ -1,0 +1,5 @@
+export const FETCH_SUGGESTION = 'FETCH_SUGGESTION';
+export const FETCH_PACKAGE = 'FETCH_PACKAGE';
+export const FETCH_VERSION = 'FETCH_VERSION';
+export const SET_SELECTED = 'SET_SELECTED';
+export const RESET_ALL = 'RESET_ALL';
