@@ -20,6 +20,6 @@
 	"scripts": {
 		"server": "sudo chmod -R 777 server && cd server && tsc && node server.js",
 		"client": "cd client && npm start",
-		"dev": "cd ./client && npm run build && cd ../ && chmod -R 777 server &&  cd server  && tsc && node server.js"
+		"dev": "cd ./client && npm install && npm run build && cd ../ && chmod -R 777 server &&  cd server  && tsc && node server.js"
 	}
 }
