@@ -28,6 +28,7 @@ export const BannerText = styled.div`
 			span {
 				font-size: 20px;
 			}
+			letter-spacing: 8px;
 		}
 	}
 	.description {

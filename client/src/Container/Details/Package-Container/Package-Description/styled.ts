@@ -16,6 +16,14 @@ export const PackageInfoText = styled.div`
 			font-size: 20px;
 			font-weight: normal;
 		}
+		@media screen and (max-width: 767px) {
+			font-size: 20px;
+			text-align: center;
+			span {
+				font-size: 14px;
+			}
+			letter-spacing: 8px;
+		}
 	}
 	.description {
 		font-size: 30px;
