@@ -29,6 +29,8 @@ export const PackageInfoText = styled.div`
 			margin: 0 10px;
 			color: #7b7b7b;
 		}
+		word-break: break-all;
+	}
 	}
 	ul {
 		margin: 0;

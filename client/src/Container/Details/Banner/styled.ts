@@ -22,6 +22,13 @@ export const BannerText = styled(Grid)`
 			text-transform: uppercase;
 			font-size: 25px;
 		}
+		@media screen and (max-width: 767px) {
+			font-size: 20px;
+			text-align: center;
+			span {
+				font-size: 20px;
+			}
+		}
 	}
 	.description {
 		margin-bottom: 15px;

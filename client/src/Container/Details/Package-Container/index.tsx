@@ -34,10 +34,10 @@ const PackageContainer: React.FC = () => {
 									<PackageDescription packageInfo={packageInfo} />
 								</Grid>
 
-								<Grid item md={3} xs={12}>
+								<Grid className='metainfo' item md={3} xs={12}>
 									<MetaInfo packageInfo={packageInfo} />
 								</Grid>
-								<Grid item md={9} xs={12}>
+								<Grid className='sizeinfo' item md={9} xs={12}>
 									<PackageSize name={packageInfo.name} />
 								</Grid>
 							</>

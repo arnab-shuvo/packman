@@ -13,13 +13,13 @@ const PackageSize: React.FC<PackageSize> = ({ name }) => {
 			<Grid container spacing={2} alignItems='center'>
 				<Grid container item md={12} xs={12} justify='center'>
 					<Grid container item md={10} xs={12}>
-						<Grid item md={4}>
+						<Grid item md={4} xs={12}>
 							<SizeInfo className='text-center'>
 								<p className='size-label'>Version</p>
 								<p className='size-info'>{selected.name}</p>
 							</SizeInfo>
 						</Grid>
-						<Grid item md={4}>
+						<Grid item md={4} xs={12}>
 							<SizeInfo className='text-center'>
 								<p className='size-label'>Minified</p>
 								<p className='size-info'>
@@ -27,7 +27,7 @@ const PackageSize: React.FC<PackageSize> = ({ name }) => {
 								</p>
 							</SizeInfo>
 						</Grid>
-						<Grid item md={4}>
+						<Grid item md={4} xs={12}>
 							<SizeInfo className='text-center'>
 								<p className='size-label'>Zipped</p>
 								<p className='size-info'>
